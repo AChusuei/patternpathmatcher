@@ -1,6 +1,5 @@
-package com.warbyparker;
-
 import java.util.*;
+import com.warbyparker.*;
 
 public class Main {
 
