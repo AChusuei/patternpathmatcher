@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 import com.warbyparker.*;
 
 public class Main {
@@ -10,7 +11,16 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		easyInitialize(); // run this if you don't want to have to run this from the console prompt
+		allPatterns = new LinkedList<Pattern>();
+		allPaths = new LinkedList<Path>();
+		if (args.length > 0 && args[0].equals("-e"))
+		{
+			easyInitialize(); // run this if you don't want to have to input everything from the console prompt
+		}
+		else
+		{
+			if (!manualInitialize()) return; // run this if you are you going to type everything in the command prompt
+		}
 		for (Path path : allPaths)
 		{
 			Pattern bestPatternMatch = null;
@@ -36,14 +46,37 @@ public class Main {
 				}
 			}
 			
-			System.out.println("Path '" + path.toString() + (exactmatch ? "' exactly matches " : "' best matches ") + "Pattern '" + (bestPatternMatch == null ? "NO MATCH" : bestPatternMatch.toString()) + "'");
-			// System.out.println(bestPatternMatch == null ? "NO MATCH" : bestPatternMatch.toString());
+			// System.out.println("Path '" + path.toString() + (exactmatch ? "' exactly matches " : "' best matches ") + "Pattern '" + (bestPatternMatch == null ? "NO MATCH" : bestPatternMatch.toString()) + "'");
+			System.out.println(bestPatternMatch == null ? "NO MATCH" : bestPatternMatch.toString());
+		}
+	}
+	
+	private static boolean manualInitialize()
+	{
+		try
+		{
+			DataInput in = new DataInputStream(System.in);
+			int numPatterns = Integer.parseInt(in.readLine());
+			for (int i = 0; i < numPatterns; i++)
+			{
+				allPatterns.add(new Pattern(in.readLine()));
+			}
+			int numPaths = Integer.parseInt(in.readLine());
+			for (int i = 0; i < numPaths; i++)
+			{
+				allPaths.add(new Path(in.readLine()));
+			}
+			return true;
+		}
+		catch (IOException ioe)
+		{
+			System.out.println("error occured inputting information for the parser: " + ioe.getMessage());
+			return false;
 		}
 	}
 	
 	private static void easyInitialize()
 	{
-		allPatterns = new LinkedList<Pattern>();
 		allPatterns.add(new Pattern("*,*,c"));
 		allPatterns.add(new Pattern("A,*,B,*,C"));
 		allPatterns.add(new Pattern("users"));
@@ -59,7 +92,6 @@ public class Main {
 		allPatterns.add(new Pattern("*,gallery,*"));
 		allPatterns.add(new Pattern("a,*,*"));
 		
-		allPaths = new LinkedList<Path>();
 		allPaths.add(new Path("/users/1234"));
 		allPaths.add(new Path("/users/1234/purchases"));
 		allPaths.add(new Path("/users"));
